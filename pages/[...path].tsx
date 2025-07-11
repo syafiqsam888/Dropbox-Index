@@ -47,12 +47,18 @@ const Home: NextPage = () => {
     }
   }, [path, refetch]);
 
+  const handleUploadComplete = () => {
+    refetch();
+  };
+
   return (
     <>
-      <Nav />
+      <Nav onUploadComplete={handleUploadComplete} />
       <Breadcrumb path={path} />
       {(isLoading || isFetching) && <Loading />}
-      {!(isLoading || isFetching) && data && <List entries={data} />}
+      {!(isLoading || isFetching) && data && (
+        <List entries={data} path={path} onUploadComplete={handleUploadComplete} />
+      )}
     </>
   );
 };

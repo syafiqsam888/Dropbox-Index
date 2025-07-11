@@ -17,6 +17,7 @@ import prettyBytes from "pretty-bytes";
 interface ListProps {
   entries: (files.FileMetadataReference | files.FolderMetadataReference)[];
   path?: string;
+  onUploadComplete?: () => void;
 }
 
 export const List = (props: ListProps) => {

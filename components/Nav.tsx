@@ -3,10 +3,27 @@ import Link from "next/link";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { SearchIcon } from "@heroicons/react/solid";
 import Head from "next/head";
+import { Upload } from "./Upload";
+import { useRouter } from "next/router";
 
-export const Nav = () => {
+interface NavProps {
+  onUploadComplete?: () => void;
+}
+
+export const Nav = ({ onUploadComplete }: NavProps) => {
   const title = process.env.NEXT_PUBLIC_TITLE ?? "D-Index";
   const { isOpen, onToggle } = useDisclosure();
+  const router = useRouter();
+  
+  // Get current path from router
+  let currentPath = "";
+  if (router.query.path) {
+    if (Array.isArray(router.query.path)) {
+      currentPath = router.query.path.join("/");
+    } else {
+      currentPath = router.query.path;
+    }
+  }
   return (
     <>
       <Head>
@@ -21,8 +38,9 @@ export const Nav = () => {
               </h3>
             </a>
           </Link>
+          
           {/* MD+ */}
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center space-x-4">
             <div className="input-group max-w-sm flex flex-row items-center overflow-hidden rounded-full">
               <input
                 type="search"
@@ -31,13 +49,18 @@ export const Nav = () => {
               />
               <SearchIcon className="bg-cyan-500 w-12 h-10 p-2" />
             </div>
+            <Upload currentPath={currentPath} onUploadComplete={onUploadComplete} />
           </div>
+          
           {/* SM */}
-          <div className="input-group overflow-hidden rounded-full md:hidden">
-            <SearchIcon
-              className="bg-cyan-500 w-12 h-10 p-2"
-              onClick={onToggle}
-            />
+          <div className="flex items-center space-x-2 md:hidden">
+            <Upload currentPath={currentPath} onUploadComplete={onUploadComplete} />
+            <div className="input-group overflow-hidden rounded-full">
+              <SearchIcon
+                className="bg-cyan-500 w-12 h-10 p-2"
+                onClick={onToggle}
+              />
+            </div>
           </div>
         </div>
         {isOpen && (

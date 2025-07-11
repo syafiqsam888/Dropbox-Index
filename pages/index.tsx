@@ -5,7 +5,7 @@ import { useQuery } from "react-query";
 import { DropboxResponse, files } from "dropbox";
 
 const Home: NextPage = () => {
-  const { data, isLoading } = useQuery("home", async () => {
+  const { data, isLoading, refetch } = useQuery("home", async () => {
     const resp = await ky
       .get("/api/explore")
       .json<DropboxResponse<files.ListFolderResult | files.ListFolderError>>();
@@ -19,12 +19,16 @@ const Home: NextPage = () => {
     }
   });
 
+  const handleUploadComplete = () => {
+    refetch();
+  };
+
   return (
     <>
-      <Nav />
+      <Nav onUploadComplete={handleUploadComplete} />
       <Breadcrumb />
       {isLoading && <Loading />}
-      {data && <List entries={data} />}
+      {data && <List entries={data} onUploadComplete={handleUploadComplete} />}
     </>
   );
 };
